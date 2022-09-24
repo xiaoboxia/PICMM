@@ -6,14 +6,8 @@
 
 **This repository is the official pytorch implementation of our Neurips 2022 paper, *Pluralistic Image Completion with Gaussian Mixture Model*.**
 
-Xiaobo Xia<sup>1\*</sup>,
-Wenhao Yang<sup>2\*</sup>,
-Jie Ren<sup>3</sup>,
-Yewen Li<sup>4</sup>,  
-Yibing Zhan<sup>5</sup>, 
-Bo Han<sup>6</sup>, 
-Tongliang Liu<sup>1</sup> <br>
-<sup>1</sup>The University of Sydney, <sup>2</sup>Nanjing University, <sup>3</sup>The University of Edinburgh, <sup>4</sup>Nanyang Technological University, <sup>5</sup>JD Explore Academy, <sup>6</sup>Hong Kong Baptist University
+Xiaobo Xia<sup>1\*</sup>, Wenhao Yang<sup>2\*</sup>, Jie Ren<sup>3</sup>, Yewen Li<sup>4</sup>, Yibing Zhan<sup>5</sup>, Bo Han<sup>6</sup>, Tongliang Liu<sup>1</sup> <br>
+<sup>1</sup>The University of Sydney, <sup>2</sup>Nanjing University, <sup>3</sup>The University of Edinburgh, <sup>4</sup>Nanyang Technological University, <sup>5</sup>JD Explore Academy, <sup>6</sup>Hong Kong Baptist University <br>
 \* Equal contributions
 
 
@@ -66,48 +60,27 @@ Notes of inference:
 
 As shown in our paper, the back-propogate-max-operation loss is
 
-$$
-\begin{aligned}
-    L_{\text{BM}}&
-    =-\frac{1}{2}\log\frac{|\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}|}{|\pmb{\Sigma}^{\mathbf{z}_c}|}
-    + \frac{1}{2}\text{tr}\left({(\pmb{\Sigma}^{\mathbf{z}_c})}^{-1}\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}\right)\\
-    &-\frac{1}{2}(\pmb{\mu}_j^{\hat{\mathbf{z}}_c} - \mu^{\mathbf{z}_c})^\top{(\pmb{\Sigma}^{\mathbf{z}_c})}^{-1}(\pmb{\mu}_j^{\hat{\mathbf{z}}_c} - \pmb{\mu}^{\mathbf{z}_c}),
-\end{aligned}
-$$
+<img src='imgs/eq1.png' width=350/>
 
 
 
 Note that we have $\pmb{\mu}^{\mathbf{z}_c},\pmb{\mu}_j^{\hat{\mathbf{z}}_c} \in \mathbb{R}^{256}$ and $\pmb{\Sigma}^{\mathbf{z}_c},\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}\in \mathbb{R}^{256\times 256}$. In our code, `z_c_mu, z_c_mu_hat_j` $\in \mathbb{R}^{256}$ and `z_c_logsigma, z_c_logsigma_hat_j` $\in \mathbb{R}^{256}$ which represent the diagonal elements of  $\pmb{\Sigma}^{\mathbf{z}_c},\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}$ under our assumptions.
 
 In this way, we can get this form of the code:
-$$
-\begin{aligned}
--\frac{1}{2}\log\frac{|\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}|}{|\pmb{\Sigma}^{\mathbf{z}_c}|} &= -\frac{1}{2}\log\frac{\prod\limits_{i=1}^{256}\text{z\_c\_logsigma[i].exp()}}{\prod\limits_{i=1}^{256}\text{z\_c\_logsigma\_hat\_j[i].exp()}} \\
-&= - \frac{1}{2} \times \left(\sum\limits_{i=1}^{256}\text{z\_c\_logsigma[i]} - \sum\limits_{i=1}^{256}\text{z\_c\_logsigma\_hat\_j[i]}\right) \\
-&= - \frac{1}{2} \times \left(\text{z\_c\_logsigma} - \text{z\_c\_logsigma\_hat\_j}\right)
-\end{aligned}
-$$
+
+<img src='imgs/eq2.png' width=600/>
+
 In the second term, 
-$$
-\begin{aligned}
-    \frac{1}{2}\text{tr}\left({(\pmb{\Sigma}^{\mathbf{z}_c})}^{-1}\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}\right) &= \frac{1}{2} \left(\sum\limits_{i=1}^{256}(1/\text{z\_c\_logsigma[i].exp()})\times \text{z\_c\_logsigma\_hat\_j.exp()}\right) \\
-    &=\frac{1}{2}\times (1/\text{z\_c\_logsigma.exp()}) \times \text{z\_c\_logsigma\_hat\_j[i].exp()}
-\end{aligned}
-$$
+
+<img src='imgs/eq3.png' width=600/>
+
 In the third term, 
-$$
-\begin{aligned}
--\frac{1}{2}(\pmb{\mu}_j^{\hat{\mathbf{z}}_c} - \pmb{\mu}^{\mathbf{z}_c})^\top{(\pmb{\Sigma}^{\mathbf{z}_c})}^{-1}(\pmb{\mu}_j^{\hat{\mathbf{z}}_c} - \pmb{\mu}^{\mathbf{z}_c}) &=  -\frac{1}{2} (\text{z\_c\_mu\_hat\_j} - \text{z\_c\_mu})^2 \times (1/\text{z\_c\_logsigma.exp()})
-\end{aligned}
-$$
+
+<img src='imgs/eq4.png' width=700/>
+
 We can now summarize our bm loss of this form in our PyTorch codes:
-$$
-\begin{aligned}
-\text{self.loss\_bm} = - (1 / 2) & * ((\text{z\_c\_logsigma\_hat\_j} - \text{z\_c\_logsigma}) \\
-                                    &- ((1 / \text{z\_c\_logsigma.exp()}) * \text{z\_c\_logsigma\_hat\_j.exp()}) \\ 
-                                    &+ (\text{z\_c\_mu\_hat\_j} - \text{z\_c\_mu}) ** 2 * (1 / \text{z\_c\_logsigma.exp()})).\text{sum(1)}.\text{mean()}
-\end{aligned}
-$$
+
+<img src='imgs/eq5.png' width=700/>
 
 
 
