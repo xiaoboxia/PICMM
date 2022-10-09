@@ -1,6 +1,6 @@
-# Pluralistic Image Completion with Gaussian Mixture Model (PICMM)
+# Pluralistic Image Completion with Gaussian Mixture Models (PICMM)
 
-<img src='imgs/intro.png'/>
+<img src='imgs/intro.png' width='60%'/>
 
 ### [Paper (ArXiv)](https://arxiv.org/pdf/2205.09086.pdf) | Pre-trained Models (coming soon) | Supplemental Material (coming soon)
 
@@ -56,43 +56,15 @@ Notes of inference:
 
 
 
-## More explanations on back-propogate-max-operation loss
-
-As shown in our paper, the back-propogate-max-operation loss is
-
-<img src='imgs/eq1.png' width=350/>
-
-
-
-Note that we have $\pmb{\mu}^{\mathbf{z}_c},\pmb{\mu}_j^{\hat{\mathbf{z}}_c} \in \mathbb{R}^{256}$ and $\pmb{\Sigma}^{\mathbf{z}_c},\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}\in \mathbb{R}^{256\times 256}$. In our code, `z_c_mu, z_c_mu_hat_j` $\in \mathbb{R}^{256}$ and `z_c_logsigma, z_c_logsigma_hat_j` $\in \mathbb{R}^{256}$ which represent the diagonal elements of  $\pmb{\Sigma}^{\mathbf{z}_c},\pmb{\Sigma}_j^{\hat{\mathbf{z}}_c}$ under our assumptions.
-
-In this way, we can get this form of the code:
-
-<img src='imgs/eq2.png' width=600/>
-
-In the second term, 
-
-<img src='imgs/eq3.png' width=600/>
-
-In the third term, 
-
-<img src='imgs/eq4.png' width=700/>
-
-We can now summarize our bm loss of this form in our PyTorch codes:
-
-<img src='imgs/eq5.png' width=700/>
-
-
-
 ## Citation
 
 If you find our work useful for your research, please consider citing the following papers :)
 
 ```bibtex
-@article{xia2022pluralistic,
+@inproceedings{xia2022pluralistic,
   title={Pluralistic Image Completion with Probabilistic Mixture-of-Experts},
   author={Xia, Xiaobo and Yang, Wenhao and Ren, Jie and Li, Yewen and Zhan, Yibing and Han, Bo and Liu, Tongliang},
-  journal={arXiv preprint arXiv:2205.09086},
+  booktitle={NeurIPS},
   year={2022}
 }
 ```
