@@ -4,7 +4,7 @@
 
 ### [Paper (ArXiv)](https://arxiv.org/pdf/2205.09086.pdf) | Pre-trained Models (coming soon) | Supplemental Material (coming soon)
 
-**This repository is the official pytorch implementation of our Neurips 2022 paper, *Pluralistic Image Completion with Gaussian Mixture Model*.**
+**This repository is the official pytorch implementation of our NeurIPS 2022 paper, *Pluralistic Image Completion with Gaussian Mixture Models*.**
 
 Xiaobo Xia<sup>1\*</sup>, Wenhao Yang<sup>2\*</sup>, Jie Ren<sup>3</sup>, Yewen Li<sup>4</sup>, Yibing Zhan<sup>5</sup>, Bo Han<sup>6</sup>, Tongliang Liu<sup>1</sup> <br>
 <sup>1</sup>The University of Sydney, <sup>2</sup>Nanjing University, <sup>3</sup>The University of Edinburgh, <sup>4</sup>Nanyang Technological University, <sup>5</sup>JD Explore Academy, <sup>6</sup>Hong Kong Baptist University <br>
